@@ -1,0 +1,10 @@
+{
+  "criteria": {
+    "any": {
+      "trigger": "minecraft:mined_block"
+    }
+  },
+  "rewards": {
+    "function": "trackbreak:on_break"
+  }
+}
