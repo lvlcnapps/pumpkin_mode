@@ -1,0 +1,1 @@
+tellraw @s {"storage":"stats:database","nbt":"History"}
