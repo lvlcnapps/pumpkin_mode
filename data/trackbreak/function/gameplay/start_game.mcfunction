@@ -26,7 +26,7 @@ scoreboard players set @a stats_kills 0
 scoreboard players set game_time pumpkin_counter 0
 scoreboard players set count_pies pumpkin_counter 0
 scoreboard players set end pumpkin_counter 0
-# execute as @a[tag=!oct_hunter] run function cosmo:gameplay/color_amogus
+execute as @a[tag=!oct_hunter] run function trackbreak:gameplay/color_gnomes
 
 item replace entity @a[tag=oct_hunter] armor.chest with minecraft:leather_chestplate[minecraft:dyed_color=0]
 item replace entity @a[tag=oct_hunter] armor.legs with minecraft:leather_leggings[minecraft:dyed_color=0]

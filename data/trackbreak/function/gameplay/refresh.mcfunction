@@ -14,7 +14,7 @@ scoreboard players set phase pumpkin_counter 1
 scoreboard players set player_count pumpkin_counter 1
 # scoreboard players display numberformat Спасшихся: display_ph_2 styled {"color":"red"}
 # scoreboard objectives setdisplay sidebar dsds
-# data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 scoreboard players set p2_count pumpkin_counter -1
 
 bossbar set minecraft:bb1 max 20
