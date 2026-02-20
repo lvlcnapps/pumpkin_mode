@@ -1,5 +1,5 @@
-execute if score phase pumpkin_counter matches 1 run function trackbreak:gameplay/main_game
-execute if score phase pumpkin_counter matches 2 run function trackbreak:gameplay/phase_two
+execute if score phase pumpkin_counter matches 1..2 run function trackbreak:gameplay/main_game
+execute if score phase pumpkin_counter matches 3 run function trackbreak:gameplay/phase_two
 
 function trackbreak:camera_manager/main
 

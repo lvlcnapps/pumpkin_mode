@@ -28,6 +28,7 @@ execute in minecraft:overworld if data block -7060 101 7991 Items[{id:"minecraft
 execute in minecraft:overworld if data block -7082 89 7979 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 execute in minecraft:overworld if data block -7062 72 7965 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 execute in minecraft:overworld if data block -7081 89 7981 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
+execute in minecraft:overworld if data block -7021 77 7973 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 
 scoreboard players operation count_pies pumpkin_counter = max pumpkin_counter
 scoreboard players operation count_pies pumpkin_counter -= data pumpkin_counter

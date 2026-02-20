@@ -16,3 +16,5 @@ scoreboard players set dead pumpkin_counter 0
 execute as @a[team=specs,tag=!oct_hunter] run scoreboard players add dead pumpkin_counter 1
 scoreboard players operation dead pumpkin_counter -= count_gnomes pumpkin_counter
 execute if score end pumpkin_counter matches 0 if score dead pumpkin_counter matches 0 run function trackbreak:gameplay/hunter_win
+
+execute if score phase pumpkin_counter matches 1 if score count_pies pumpkin_counter >= cond_ph_2 pumpkin_counter run function trackbreak:load_axes
