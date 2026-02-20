@@ -38,11 +38,5 @@ item replace entity @a[tag=oct_hunter] armor.head with minecraft:player_head[min
 item replace entity @a[tag=oct_hunter] weapon.mainhand with minecraft:netherite_hoe[minecraft:custom_name='[{"text":"Культяпка","italic":false}]'] 1
 item replace entity @a[tag=oct_hunter] weapon.offhand with minecraft:netherite_hoe[minecraft:custom_name='[{"text":"Культяпка","italic":false}]'] 1
 
-
-item replace entity @a[tag=!oct_hunter] armor.chest with minecraft:leather_chestplate
-item replace entity @a[tag=!oct_hunter] armor.legs with minecraft:leather_leggings
-item replace entity @a[tag=!oct_hunter] armor.feet with minecraft:leather_boots
-item replace entity @a[tag=!oct_hunter] armor.head with minecraft:leather_helmet
-
 bossbar set minecraft:bb1 players sdsdcc2442
 bossbar set minecraft:bb1 players @a
