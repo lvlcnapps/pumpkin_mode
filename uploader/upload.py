@@ -16,6 +16,18 @@ with open("serverid", "r") as file:
 
 exa = Exaroton(token)
 DATAPACKS_PATH = "world/datapacks"
+MAX_RETRIES = 5
+
+
+def api_call_with_retry(fn, *args, **kwargs):
+    """Call fn(*args, **kwargs) and retry up to MAX_RETRIES times if the result is None."""
+    for attempt in range(1, MAX_RETRIES + 1):
+        result = fn(*args, **kwargs)
+        if result is not None:
+            return result
+        print(f"    Response was None, retrying (attempt {attempt}/{MAX_RETRIES})...")
+    print(f"    Warning: still None after {MAX_RETRIES} attempts.")
+    return None
 
 
 def upload_as_zip(local_folder: Path, verbose: bool = False):
@@ -35,7 +47,7 @@ def upload_as_zip(local_folder: Path, verbose: bool = False):
                     zipf.write(file_path, file_path.relative_to(local_folder))
 
         with open(temp_zip_path, 'rb') as f:
-            response = exa.write_file_data(id=SERVER_ID, path=server_zip_path, data=f.read())
+            response = api_call_with_retry(exa.write_file_data, id=SERVER_ID, path=server_zip_path, data=f.read())
             if verbose:
                 print(f"  API response: {response}")
 
@@ -64,7 +76,7 @@ def upload_as_folder(local_folder: Path, verbose: bool = False):
     # Create directories first (sorted so parents come before children)
     for dir_path in sorted(dirs_to_create):
         print(f"  mkdir {dir_path}")
-        response = exa.create_directory(id=SERVER_ID, path=dir_path)
+        response = api_call_with_retry(exa.create_directory, id=SERVER_ID, path=dir_path)
         if verbose:
             print(f"    API response: {response}")
 
@@ -74,7 +86,7 @@ def upload_as_folder(local_folder: Path, verbose: bool = False):
         server_path = f"{base_path}/{relative_path}"
         print(f"  [{i}/{total}] {relative_path}")
         with open(file_path, 'rb') as f:
-            response = exa.write_file_data(id=SERVER_ID, path=server_path, data=f.read())
+            response = api_call_with_retry(exa.write_file_data, id=SERVER_ID, path=server_path, data=f.read())
             if verbose:
                 print(f"    API response: {response}")
 
