@@ -34,7 +34,8 @@ execute at @a[scores={death_handler=1..}] run summon mannequin ~ ~ ~ {Tags:["cad
 execute as @a[scores={death_handler=1..}] run function trackbreak:kill_mirror
 scoreboard players set @a death_handler 0
 
-execute as @a[tag=hunter] at @s anchored eyes if block ^ ^ ^1 minecraft:pumpkin run execute positioned ^ ^ ^1 run function trackbreak:dfs_pumpkin
+# Handle pumpkin breaking
+execute as @a[scores={pumpkin_breaks=1..}] run function trackbreak:on_break
 
 function trackbreak:golems_check
 
