@@ -1,1 +1,0 @@
-scoreboard players set @a is_mirroring 0
