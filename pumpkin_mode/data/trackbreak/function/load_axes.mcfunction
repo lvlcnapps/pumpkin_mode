@@ -8,4 +8,6 @@ scoreboard players set phase pumpkin_counter 2
 # hide axes countdown scoreboard
 scoreboard objectives setdisplay sidebar
 
-say TOPOR!!!
+# Title & sound
+playsound minecraft:item.trident.return master @a
+title @a title {"text":"Вперёд за ТОПОРАМИ!","color":"yellow"}
