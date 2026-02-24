@@ -21,3 +21,7 @@ bossbar set minecraft:bb1 max 20
 bossbar set minecraft:bb1 style notched_20
 bossbar set minecraft:bb1 name "Собери пироги!"
 bossbar set minecraft:bb1 color green
+
+# Pies until axes sidebar
+scoreboard objectives add pies_until_axes dummy {"text":"Axes in:","color":"gold"}
+scoreboard objectives setdisplay sidebar pies_until_axes
