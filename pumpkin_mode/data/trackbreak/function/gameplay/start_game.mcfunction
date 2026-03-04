@@ -38,7 +38,9 @@ scoreboard players set end pumpkin_counter 0
 # 1 - all players in the gate, countdown started, inner gate closed, outer closed
 # 2 - countdown timeout, inner gate open, outer closed
 # 3 - all players left the gate, all gates closed
-scoreboard players set gate_state pumpkin_counter 0
+scoreboard objectives add gate_counter dummy
+scoreboard players set gate_state gate_counter 0
+scoreboard players set gate_countdown gate_counter 60
 
 # Color management
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

@@ -3,9 +3,16 @@ execute if score phase pumpkin_counter matches 1..2 run function trackbreak:game
 execute if score phase pumpkin_counter matches 3 run function trackbreak:gameplay/phase_two
 
 # Gate management in the beginning of the game
-scoreboard players set in_gates pumpkin_counter 0
-execute as @a[tag=!oct_hunter, x=-7062,y=75,z=7933,dx=4,dy=4,dz=4] run scoreboard players add in_gates pumpkin_counter 1
-execute if score in_gates pumpkin_counter = count_gnomes pumpkin_counter run tellraw @a "All in gates"
+scoreboard players set in_gates gate_counter 0
+execute as @a[tag=!oct_hunter, x=-7062,y=75,z=7933,dx=4,dy=4,dz=4] run scoreboard players add in_gates gate_counter 1
+execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run scoreboard players set gate_state gate_counter 1
+
+execute if score gate_state gate_counter matches 1 run function trackbreak:gate_countdown
+
+# zone for exiting the gates
+scoreboard players set in_gates2 gate_counter 0
+execute as @a[tag=!oct_hunter, x=-7061,y=75,z=7932,dx=5,dy=5,dz=5] run scoreboard players add in_gates2 gate_counter 1
+execute if score in_gates2 gate_counter matches 0 if score gate_state gate_counter matches 2 run scoreboard players set gate_state gate_counter 3
 
 # Camera room management
 function trackbreak:camera_manager/main
