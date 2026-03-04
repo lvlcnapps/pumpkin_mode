@@ -1,8 +1,16 @@
+# Envoking phase-specific functions
 execute if score phase pumpkin_counter matches 1..2 run function trackbreak:gameplay/main_game
 execute if score phase pumpkin_counter matches 3 run function trackbreak:gameplay/phase_two
 
+# Gate management in the beginning of the game
+scoreboard players set in_gates pumpkin_counter 0
+execute as @a[tag=!oct_hunter, x=-7062,y=75,z=7933,dx=4,dy=4,dz=4] run scoreboard players add in_gates pumpkin_counter 1
+execute if score in_gates pumpkin_counter = count_gnomes pumpkin_counter run tellraw @a "All in gates"
+
+# Camera room management
 function trackbreak:camera_manager/main
 
+# Mirror management
 execute as @a store result score @s player_x run data get entity @s Pos[0] 10
 scoreboard players set @a neg_player_z 0
 execute as @a run scoreboard players operation @s neg_player_z -= @s player_z
@@ -37,10 +45,13 @@ scoreboard players set @a death_handler 0
 # Handle pumpkin breaking
 execute as @a[scores={pumpkin_breaks=1..}] run function trackbreak:on_break
 
+# Handle golems, DEPRECATED
 function trackbreak:golems_check
 
+# Teleport to fontain. TODO: isolate into room-specific function
 execute as @a[x=-7053,y=57,z=7963,dx=0,dy=0,dz=0] run tp @s -7078 67 7963 ~ ~
 
+# 
 execute as @e[tag=add_pies] on target run execute as @s run scoreboard players add act_target pumpkin_counter 1
 execute as @e[tag=add_pies] run data remove entity @s interaction
 
@@ -57,6 +68,8 @@ execute if data entity @n[tag=pr_room] interaction run data remove entity @n[tag
 execute as @n[tag=pr_room_esc] on target at @s run playsound minecraft:block.vault.insert_item_fail master @s -7060.0 94.0 7991.0
 execute as @n[tag=pr_room_esc] on target run tp @s -7060.0 94.0 7991.0 180 0
 execute if data entity @n[tag=pr_room_esc] interaction run data remove entity @n[tag=pr_room_esc] interaction
+
+# Whitcher quest management. TODO: isolate into separate function
 
 function trackbreak:fill_witcher
 
@@ -76,10 +89,12 @@ execute if score state witcher_quest_state matches 3.. run setblock -7051 88 795
 execute if score state witcher_quest_state matches 4.. run setblock -7051 88 7953 minecraft:air
 execute if score state witcher_quest_state matches 5.. run setblock -7051 88 7952 minecraft:air
 
+# ?????
 scoreboard players enable @a[tag=admin] admin
 execute as @a[scores={admin=1..}] run dialog show @s trackbreak:admin
 scoreboard players set @a[scores={admin=1..}] admin 0
 
+# Radar code, generated automatically. TODO: isolate into separate function
 execute if entity @p[tag=oct_hunter,x=-7067,y=82,z=8000, dx=12, dy=7, dz=-18] run scoreboard players set cam1 cam_radar 1
 execute if score cam1 cam_radar matches 1.. run setblock -7051 80 7949 minecraft:player_head[rotation=8]{custom_name:'{"text":"Компьютер (включен)","color":"gold","underlined":true,"bold":true,"italic":false}',profile:{id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzYjgyMmNmMmU1MDE0YzIwMTgxN2U3ZjZmZTExYjA2Y2MyMzFjZTE1YTBhNmI3ZDdkODYzMTMyZTYzMmFjNCJ9fX0="}]}}
 execute if score cam1 cam_radar matches 0 run setblock -7051 80 7949 minecraft:player_head[rotation=8]{custom_name:'{"text":"Компьютер (выключен)","color":"gold","underlined":true,"bold":true,"italic":false}',profile:{id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTViMzRjNmNlZTY4NGQ3MTcxNGIzYTFjNzExNTExY2JkNjkyNDQ3ODIwYmM5YTExMzYyOGMxZDM1ODA0ODI1ZSJ9fX0="}]}}
@@ -125,4 +140,5 @@ execute if score cam9 cam_radar matches 1.. run setblock -7049 78 7949 minecraft
 execute if score cam9 cam_radar matches 0 run setblock -7049 78 7949 minecraft:player_head[rotation=8]{custom_name:'{"text":"Компьютер (выключен)","color":"gold","underlined":true,"bold":true,"italic":false}',profile:{id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTViMzRjNmNlZTY4NGQ3MTcxNGIzYTFjNzExNTExY2JkNjkyNDQ3ODIwYmM5YTExMzYyOGMxZDM1ODA0ODI1ZSJ9fX0="}]}}
 scoreboard players set cam9 cam_radar 0
 
+# Lobby management
 execute in minecraft:overworld run data modify block -7076 79 7887 front_text.messages set value [["Количество"],["пирогов для"],["победы:"],[{"score":{"name":"act_target","objective":"pumpkin_counter"}}]]

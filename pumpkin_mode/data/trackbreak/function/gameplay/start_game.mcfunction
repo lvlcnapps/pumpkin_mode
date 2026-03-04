@@ -6,6 +6,7 @@ time set 12700
 
 execute as @a run attribute @s minecraft:safe_fall_distance base set 100
 
+# Hunter effects
 effect give @a[tag=oct_hunter] minecraft:strength infinite 50 true
 effect give @a[tag=oct_hunter] minecraft:speed infinite 3 true
 effect give @a[tag=oct_hunter] minecraft:dolphins_grace infinite 3 true
@@ -13,9 +14,11 @@ effect give @a[tag=oct_hunter] minecraft:jump_boost infinite 6 true
 execute as @a[tag=!oct_hunter] run attribute @s minecraft:scale base set 0.5
 execute as @a[tag=oct_hunter] run attribute @s minecraft:scale base set 1
 
+# Global effects: invisibility and adventure mode
 effect give @a minecraft:invisibility infinite 1 true
 gamemode adventure @a
 
+# Initialize scoreboards
 scoreboard players set @a logged 0
 scoreboard players set target pumpkin_counter 0
 scoreboard players operation target pumpkin_counter += max pumpkin_counter
@@ -28,9 +31,20 @@ scoreboard players set @a stats_kills 0
 scoreboard players set game_time pumpkin_counter 0
 scoreboard players set count_pies pumpkin_counter 0
 scoreboard players set end pumpkin_counter 0
+
+# State of the gate. Needed to track that all players have reached the gate
+# before starting the game. 
+# 0 - init, inner gate closed, outer open
+# 1 - all players in the gate, countdown started, inner gate closed, outer closed
+# 2 - countdown timeout, inner gate open, outer closed
+# 3 - all players left the gate, all gates closed
+scoreboard players set gate_state pumpkin_counter 0
+
+# Color management
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 execute as @a[tag=!oct_hunter] run function trackbreak:gameplay/color_gnomes
 
+# Hunter equipment
 item replace entity @a[tag=oct_hunter] armor.chest with minecraft:leather_chestplate[minecraft:dyed_color=0]
 item replace entity @a[tag=oct_hunter] armor.legs with minecraft:leather_leggings[minecraft:dyed_color=0]
 item replace entity @a[tag=oct_hunter] armor.feet with minecraft:leather_boots[minecraft:dyed_color=0]
@@ -38,5 +52,6 @@ item replace entity @a[tag=oct_hunter] armor.head with minecraft:player_head[min
 item replace entity @a[tag=oct_hunter] weapon.mainhand with minecraft:netherite_hoe[minecraft:custom_name='[{"text":"Культяпка","italic":false}]'] 1
 item replace entity @a[tag=oct_hunter] weapon.offhand with minecraft:netherite_hoe[minecraft:custom_name='[{"text":"Культяпка","italic":false}]'] 1
 
+# Bossbar setup
 bossbar set minecraft:bb1 players sdsdcc2442
 bossbar set minecraft:bb1 players @a
