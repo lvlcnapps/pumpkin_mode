@@ -1,0 +1,352 @@
+""" Exaroton Class to interface with the API """
+
+import requests
+
+from . import types
+
+
+class Exaroton:
+    """Exaroton Class for the API"""
+
+    def __init__(self, token: str, host: str = "https://api.exaroton.com/v1") -> None:
+        """
+        Exaroton Class to interface with the API
+
+        Parameters:
+            ``token`` (``str``):
+                The Authentication Token from the [user page](https://exaroton.com/account/)
+
+            ``host`` (``str``, optional):
+                The API Host. Defaults to "https://api.exaroton.com/v1".
+        """
+        self._host = host
+        self._session = requests.Session()
+        self._session.headers.update({"Authorization": f"Bearer {token}"})
+
+    def _make_request(self, path: str, method: str = "get", **kwargs):
+        """Make HTTP Requests against the API
+
+        Parameters:
+            ``path`` (``str``): The API calls' path for the request.
+            ``method`` (``str``, optional): HTTP Method (GET, POST, PUT, etc). Defaults to GET.
+            ``**kwargs``: Additional arguments passed to the API call.
+
+        Returns:
+            JSON serialized data
+        """
+        req = self._session.request(method, f"{self._host}/{path}", **kwargs)
+        # TODO Error Handling
+        content_type = req.headers["content-type"]
+
+        if content_type == "application/json":
+            return req.json()
+
+        elif content_type == "text/plain;charset=UTF-8":
+            return bytes.decode(req.content, "utf8")
+
+        elif content_type == "application/octet-stream":
+            return req.content
+
+        elif content_type == "image/png":
+            # In case returned data is an image (for example the server-icon.png)
+            # This type isn't actually documentated by the API Docs :thumbsup:
+            return req.content
+
+    def get_account(self) -> types.Account:
+        """Get information about the authenticated Account
+
+        Returns:
+            ``types.Account``: Your Account
+        """
+        _data = self._make_request("account")["data"]
+        return types.Account(**_data)
+
+    def get_servers(self) -> types.List:
+        """Get a list of servers on your account
+
+        Returns:
+            ``types.List``: List of ``types.Server`` objects
+        """
+        _data = self._make_request("servers")["data"]
+        return types.List(types.Server(**data) for data in _data)
+
+    def get_server(self, id: str) -> types.Server:
+        """Get a specific Server on your account
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``types.Server``: The Server
+        """
+        _data = self._make_request(f"servers/{id}")["data"]
+        return types.Server(**_data)
+    
+    def get_server_status(self, id: str) -> bool:
+        """Returns whether the server is running
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``bool``: If the server is currently running
+        """
+        return types.Server(**self._make_request(f"servers/{id}")["data"]).status
+
+    def get_server_logs(self, id: str) -> str:
+        """Retrieve logs of the specified server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``str``: The current log file in its entirety.
+        """
+        _data = self._make_request(f"servers/{id}/logs")["data"]["content"]
+        return _data
+
+    def upload_logs(self, id: str) -> types.Logs:
+        """Upload logs to https://mclo.gs
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``types.Logs``: Identifier and URLS to the uploaded log
+        """
+        _data = self._make_request(f"servers/{id}/logs/share")["data"]
+        return types.Logs(**_data)
+
+    def get_server_ram(self, id: str) -> int:
+        """Get the RAM of a Server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``int``: Currently set RAM in Gigabytes
+        """
+        _data = self._make_request(f"servers/{id}/options/ram")["data"]["ram"]
+        return _data
+
+    def set_server_ram(self, id: str, ram: int) -> int:
+        """Set a new amount of RAM to be used by the specified server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``ram`` (``int``): RAM in Gigabyte
+
+        Returns:
+            ``int``: Newly set RAM in Gigabytes
+        """
+        _data = self._make_request(
+            f"servers/{id}/options/ram", "post", json={"ram": ram}
+        )["data"]["ram"]
+        return _data
+
+    def start(self, id: str) -> str:
+        """Start the Server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``str``: "Hello, world!"
+        """
+        _data = self._make_request(f"servers/{id}/start")
+        return _data
+
+    def stop(self, id: str) -> str:
+        """Stop the Server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``str``: "Hello, world!"
+        """
+        _data = self._make_request(f"servers/{id}/stop")
+        return _data
+
+    def restart(self, id: str) -> str:
+        """Restart the Server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``str``: "Hello, world!"
+        """
+        _data = self._make_request(f"servers/{id}/restart")
+        return _data
+
+    def command(self, id: str, command: str) -> str:
+        """Send a Command to the Server
+
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``command`` (``str``): The command (`say Hello World`)
+
+        Returns:
+            ``str``: "Hello, world!"
+        """
+        _data = self._make_request(
+            f"servers/{id}/command", "post", json={"command": command}
+        )["data"]
+        return _data
+
+    def get_player_lists(self, id: str) -> list:
+        """Get a list of available playerlists
+
+        Args:
+            ``id`` (``str``): The ID of the server
+
+        Returns:
+            ``list``: The List of available playerlists (whitelist, ops, etc.)
+        """
+        _data = self._make_request(f"servers/{id}/playerlists")["data"]
+        return _data
+
+    def get_player_list(self, id: str, player_list: str) -> list:
+        """Get a specific playerlist
+
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``player_list`` (``str``): The playerlist to retrieve
+
+        Returns:
+            ``list``: List of players on that list
+        """
+        _data = self._make_request(f"servers/{id}/playerlists/{player_list}")["data"]
+        return _data
+
+    def add_player_to_list(self, id: str, player_list: str, usernames: list) -> list:
+        """Add playernames to a playerlist
+
+        Args:
+            id (``str``): The ID of the server
+            player_list (``str``): The name of the playerlist (eg "whitelist")
+            usernames (``list`` | ``str``): The username or multiple thereof to add
+
+        Returns:
+            ``list``: The new list of players on that list
+        """
+        _data = self._make_request(
+            f"servers/{id}/playerlists/{player_list}",
+            "put",
+            json={"entries": usernames},
+        )["data"]
+        return _data
+
+    def remove_player_from_list(self, id: str, player_list: str, usernames: list):
+        """Remove players from a playerlist
+
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``player_list`` (``str``): The name of the playerlist (eg "whitelist")
+            ``usernames`` (``list`` | ``str``): The username of multiple thereof to remove
+
+        Returns:
+            ``list``: The new list of players on that list
+        """
+        _data = self._make_request(
+            f"servers/{id}/playerlists/{player_list}",
+            "delete",
+            json={"entries": usernames},
+        )["data"]
+        return _data
+
+    def get_file_data(self, id: str, path: str):
+        """Retrieve file data based on a given path.
+
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``path`` (``str``): The path to retrieve
+        """
+        _data = self._make_request(f"servers/{id}/files/data/{path}")
+        return _data
+
+    def write_file_data(self, id: str = None, path: str = None, data = None):
+        """Write content to a file. If it doesn't exist yet, it'll be created."""
+        _data = self._make_request(f"servers/{id}/files/data/{path}", "put", data=data)
+        return _data
+
+    def create_directory(self, id: str, path: str):
+        """Create a directory on the server.
+        
+        Args:
+            ``id`` (``str``): The ID of the server
+            ``path`` (``str``): The path of the directory to create
+        """
+        _data = self._make_request(
+            f"servers/{id}/files/data/{path}",
+            "put",
+            data=b"",
+            headers={"Content-Type": "inode/directory"},
+        )
+        return _data
+
+    def delete_file_data(self, id: str, path: str):
+        _data = self._make_request(f"servers/{id}/files/data/{path}", "delete")
+        return _data
+
+class ServerInstance(Exaroton):
+    """A standalone instance of a server. This is useful when only managing a single instance"""
+
+    def __init__(self, token: str, id: str, host: str = "https://api.exaroton.com/v1") -> None:
+        super().__init__(token, host)
+        self._id = id
+    
+    def get_account(self) -> types.Account:
+        return super().get_account()
+    
+    def get_servers(self) -> types.List:
+        return super().get_servers()
+    
+    def get_server(self) -> types.Server:
+        return super().get_server(self._id)
+    
+    def get_server_status(self) -> bool:
+        return super().get_server_status(self._id)
+    
+    def get_server_logs(self) -> str:
+        return super().get_server_logs(self._id)
+    
+    def upload_logs(self) -> types.Logs:
+        return super().upload_logs(self._id)
+    
+    def get_server_ram(self) -> int:
+        return super().get_server_ram(self._id)
+    
+    def set_server_ram(self, ram: int) -> int:
+        return super().set_server_ram(self._id, ram)
+    
+    def start(self) -> str:
+        return super().start(self._id)
+    
+    def stop(self) -> str:
+        return super().stop(self._id)
+    
+    def command(self, command: str) -> str:
+        return super().command(self._id, command)
+    
+    def get_player_lists(self) -> list:
+        return super().get_player_lists(self._id)
+    
+    def get_player_list(self, player_list: str) -> list:
+        return super().get_player_list(self._id, player_list)
+    
+    def add_player_to_list(self, player_list: str, usernames: list) -> list:
+        return super().add_player_to_list(self._id, player_list, usernames)
+    
+    def remove_player_from_list(self, player_list: str, usernames: list):
+        return super().remove_player_from_list(self._id, player_list, usernames)
+    
+    def get_file_data(self, path: str):
+        return super().get_file_data(self._id, path)
+    
+    def write_file_data(self, path: str = None, data=None):
+        return super().write_file_data(self._id, path, data)
+    
+    def delete_file_data(self, id: str, path: str):
+        return super().delete_file_data(self._id, path)
