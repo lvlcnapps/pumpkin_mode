@@ -18,3 +18,6 @@ scoreboard players operation dead pumpkin_counter -= count_gnomes pumpkin_counte
 execute if score end pumpkin_counter matches 0 if score dead pumpkin_counter matches 0 run function trackbreak:gameplay/hunter_win
 
 execute if score phase pumpkin_counter matches 1 if score count_pies pumpkin_counter >= cond_ph_2 pumpkin_counter run function trackbreak:load_axes
+
+scoreboard players operation § pies_until_axes = cond_ph_2 pumpkin_counter
+scoreboard players operation § pies_until_axes -= count_pies pumpkin_counter

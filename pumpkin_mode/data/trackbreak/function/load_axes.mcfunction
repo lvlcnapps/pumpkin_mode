@@ -5,4 +5,9 @@ item replace block -7083 77 7971 container.0 with iron_axe[custom_name=[{"text":
 
 scoreboard players set phase pumpkin_counter 2
 
-say TOPOR!!!
+# hide axes countdown scoreboard
+scoreboard objectives setdisplay sidebar
+
+# Title & sound
+playsound minecraft:item.trident.return master @a
+title @a title {"text":"Вперёд за ТОПОРАМИ!","color":"yellow"}
