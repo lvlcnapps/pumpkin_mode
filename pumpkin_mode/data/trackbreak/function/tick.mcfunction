@@ -30,10 +30,6 @@ execute as @a store result score @s player_view_y run data get entity @s Rotatio
 #execute as @a[scores={is_mirroring=1..}] run function trackbreak:is_mirror_dead
 #execute in minecraft:overworld as @a[scores={is_mirroring=1..}] run function trackbreak:tick_mirror
 
-execute at @a[scores={death_handler=1..}] run summon mannequin ~ ~ ~ {Tags:["cadaver"],pose:sleeping,attributes:[{id:scale,base:0.5f}]}
-execute as @a[scores={death_handler=1..}] run function trackbreak:kill_mirror
-scoreboard players set @a death_handler 0
-
 # Handle pumpkin breaking
 execute as @a[scores={pumpkin_breaks=1..}] run function trackbreak:on_break
 
@@ -57,6 +53,17 @@ execute if data entity @n[tag=pr_room] interaction run data remove entity @n[tag
 execute as @n[tag=pr_room_esc] on target at @s run playsound minecraft:block.vault.insert_item_fail master @s -7060.0 94.0 7991.0
 execute as @n[tag=pr_room_esc] on target run tp @s -7060.0 94.0 7991.0 180 0
 execute if data entity @n[tag=pr_room_esc] interaction run data remove entity @n[tag=pr_room_esc] interaction
+
+execute as @e[tag=get_axe] at @s on target run execute as @s[tag=oct_hunter] run data remove entity @n[tag=get_axe] interaction
+execute as @e[tag=get_axe] on target run give @s iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]]
+execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[type=minecraft:item_display]
+execute as @e[tag=get_axe] if data entity @s interaction run kill @s
+
+execute as @e[tag=axe_pickup_display] at @s run tp @s ~ ~ ~ ~3 ~
+execute as @e[tag=axe_pickup_display] run scoreboard players add @s axe_bobbing 1
+execute as @e[tag=axe_pickup_display] at @s if score @s axe_bobbing matches 1..20 run tp @s ~ ~0.01 ~
+execute as @e[tag=axe_pickup_display] at @s if score @s axe_bobbing matches 21..40 run tp @s ~ ~-0.01 ~
+execute as @e[tag=axe_pickup_display] if score @s axe_bobbing matches 40.. run scoreboard players set @s axe_bobbing 0
 
 function trackbreak:fill_witcher
 
