@@ -2,6 +2,10 @@ function trackbreak:gameplay/count_pies
 
 team join specs @a[scores={death_handler = 1..}]
 gamemode spectator @a[scores={death_handler = 1..}]
+execute at @a[scores={death_handler=1..}] run summon mannequin ~ ~ ~ {Tags:["cadaver"],pose:sleeping,attributes:[{id:scale,base:0.5f}]}
+execute as @a[scores={death_handler=1..}] run function trackbreak:kill_mirror
+execute as @a if items entity @s[scores={death_handler=1..}] container.* iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]] at @s run function trackbreak:gameplay/spawn_axe
+execute as @a if items entity @s[scores={death_handler=1..}] weapon.offhand iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]] at @s run function trackbreak:gameplay/spawn_axe
 scoreboard players set @a[scores={death_handler = 1..}] death_handler 0
 
 execute as @a[tag=oct_hunter] at @s if entity @a[tag=!oct_hunter, distance=..20, team=!specs] run effect give @s minecraft:saturation 2

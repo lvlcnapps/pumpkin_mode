@@ -1,0 +1,2 @@
+summon minecraft:interaction ~ ~1 ~ {Tags:["get_axe"]}
+summon item_display ~ ~1.5 ~ {Tags:["axe_pickup_display"],item:{id:"minecraft:diamond_axe"},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}
