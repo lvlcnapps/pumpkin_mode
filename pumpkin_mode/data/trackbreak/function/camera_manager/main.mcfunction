@@ -51,31 +51,31 @@ execute if score @p[tag=cuckold] penis_size matches 0 run function trackbreak:ca
 scoreboard players set @a penis_size 0
 
 # execute as @n[tag=ride_1] on target at @s run playsound minecraft:block.vault.insert_item master @s -7062 101 7991
-execute as @n[tag=ride_1] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:1}
+execute as @n[tag=ride_1] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:1}
 execute if data entity @n[tag=ride_1] interaction run data remove entity @n[tag=ride_1] interaction
 
-execute as @n[tag=ride_2] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:2}
+execute as @n[tag=ride_2] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:2}
 execute if data entity @n[tag=ride_2] interaction run data remove entity @n[tag=ride_2] interaction
 
-execute as @n[tag=ride_3] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:3}
+execute as @n[tag=ride_3] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:3}
 execute if data entity @n[tag=ride_3] interaction run data remove entity @n[tag=ride_3] interaction
 
-execute as @n[tag=ride_4] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:4}
+execute as @n[tag=ride_4] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:4}
 execute if data entity @n[tag=ride_4] interaction run data remove entity @n[tag=ride_4] interaction
 
-execute as @n[tag=ride_5] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:5}
+execute as @n[tag=ride_5] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:5}
 execute if data entity @n[tag=ride_5] interaction run data remove entity @n[tag=ride_5] interaction
 
-execute as @n[tag=ride_6] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:6}
+execute as @n[tag=ride_6] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:6}
 execute if data entity @n[tag=ride_6] interaction run data remove entity @n[tag=ride_6] interaction
 
-execute as @n[tag=ride_7] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:7}
+execute as @n[tag=ride_7] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:7}
 execute if data entity @n[tag=ride_7] interaction run data remove entity @n[tag=ride_7] interaction
 
-execute as @n[tag=ride_8] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:8}
+execute as @n[tag=ride_8] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:8}
 execute if data entity @n[tag=ride_8] interaction run data remove entity @n[tag=ride_8] interaction
 
-execute as @n[tag=ride_9] on target at @s run execute as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:9}
+execute as @n[tag=ride_9] on target at @s run execute if entity @s[tag=!oct_hunter] as @p unless entity @p[tag=cuckold] run function trackbreak:camera_manager/ride {id:9}
 execute if data entity @n[tag=ride_9] interaction run data remove entity @n[tag=ride_9] interaction
 
 execute as @p[tag=cuckold] unless entity @n[tag=body] run kill @s
