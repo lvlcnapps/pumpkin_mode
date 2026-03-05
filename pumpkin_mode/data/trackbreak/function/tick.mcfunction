@@ -5,14 +5,23 @@ execute if score phase pumpkin_counter matches 3 run function trackbreak:gamepla
 # Gate management in the beginning of the game
 scoreboard players set in_gates gate_counter 0
 execute as @a[tag=!oct_hunter, x=-7062,y=75,z=7933,dx=4,dy=4,dz=4] run scoreboard players add in_gates gate_counter 1
+
+# 0 -> 1; close outer gate
+execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run fill -7060 76 7932 -7061 77 7932 minecraft:iron_bars
 execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run scoreboard players set gate_state gate_counter 1
 
+# state 1
 execute if score gate_state gate_counter matches 1 run function trackbreak:gate_countdown
 
+# state 2
 # zone for exiting the gates
 scoreboard players set in_gates2 gate_counter 0
 execute as @a[tag=!oct_hunter, x=-7061,y=75,z=7932,dx=5,dy=5,dz=5] run scoreboard players add in_gates2 gate_counter 1
+
+# state 2 -> 3; all players left the gate, close inner gate
+execute if score in_gates2 gate_counter matches 0 if score gate_state gate_counter matches 2 run fill -7062 76 7937 -7059 77 7937 minecraft:iron_bars
 execute if score in_gates2 gate_counter matches 0 if score gate_state gate_counter matches 2 run scoreboard players set gate_state gate_counter 3
+
 
 # Camera room management
 function trackbreak:camera_manager/main
