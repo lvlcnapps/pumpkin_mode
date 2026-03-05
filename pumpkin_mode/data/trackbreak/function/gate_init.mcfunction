@@ -11,3 +11,7 @@ scoreboard players set gate_countdown gate_counter 60
 fill -7062 76 7937 -7059 77 7937 minecraft:iron_bars
 # open outer gate
 fill -7060 76 7932 -7061 77 7932 minecraft:air
+
+# "Waiting for" sidabar
+scoreboard objectives add gate_waiting_players dummy {"text":"Waiting:","color":"red"}
+scoreboard objectives setdisplay sidebar gate_waiting_players

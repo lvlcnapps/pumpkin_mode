@@ -6,8 +6,13 @@ execute if score phase pumpkin_counter matches 3 run function trackbreak:gamepla
 scoreboard players set in_gates gate_counter 0
 execute as @a[tag=!oct_hunter, x=-7062,y=75,z=7933,dx=4,dy=4,dz=4] run scoreboard players add in_gates gate_counter 1
 
+scoreboard players operation § gate_waiting_players = count_gnomes pumpkin_counter
+scoreboard players operation § gate_waiting_players -= in_gates gate_counter 
+
+
 # 0 -> 1; close outer gate
 execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run fill -7060 76 7932 -7061 77 7932 minecraft:iron_bars
+execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run scoreboard objectives setdisplay sidebar pies_until_axes
 execute if score in_gates gate_counter = count_gnomes pumpkin_counter if score gate_state gate_counter matches 0 run scoreboard players set gate_state gate_counter 1
 
 # state 1
