@@ -1,6 +1,6 @@
 # How to use uploader
 
-Create `/uploader/tocken.secret` file, put there your Exaroton token (on website: account->settings->API tocken). In `uploader/serverid` specify id of the server.
+Create `/uploader/token.secret` file, put there your Exaroton token (on website: account->settings->API tocken). In `uploader/serverid` specify id of the server.
 
 Upload folder to exaroton:
 ```
