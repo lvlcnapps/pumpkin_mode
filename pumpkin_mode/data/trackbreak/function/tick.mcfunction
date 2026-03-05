@@ -43,6 +43,12 @@ execute as @e[tag=add_pies] run data remove entity @s interaction
 execute as @e[tag=remove_pies] on target run execute as @s run scoreboard players remove act_target pumpkin_counter 1
 execute as @e[tag=remove_pies] run data remove entity @s interaction
 
+execute as @e[tag=add_pies_axes] on target run execute as @s run scoreboard players add cond_ph_2 pumpkin_counter 1
+execute as @e[tag=add_pies_axes] run data remove entity @s interaction
+
+execute as @e[tag=remove_pies_axes] on target run execute as @s run scoreboard players remove cond_ph_2 pumpkin_counter 1
+execute as @e[tag=remove_pies_axes] run data remove entity @s interaction
+
 execute as @n[tag=start_button] on target run function trackbreak:gameplay/start_game
 execute if data entity @n[tag=start_button] interaction run data remove entity @n[tag=start_button] interaction
 
@@ -133,3 +139,4 @@ execute if score cam9 cam_radar matches 0 run setblock -7049 78 7949 minecraft:p
 scoreboard players set cam9 cam_radar 0
 
 execute in minecraft:overworld run data modify block -7076 79 7887 front_text.messages set value [["Количество"],["пирогов для"],["победы:"],[{"score":{"name":"act_target","objective":"pumpkin_counter"}}]]
+execute in minecraft:overworld run data modify block -7076 80 7887 front_text.messages set value [["Количество"],["пирогов для"],["топоров:"],[{"score":{"name":"cond_ph_2","objective":"pumpkin_counter"}}]]
