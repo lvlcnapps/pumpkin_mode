@@ -10,11 +10,12 @@ execute as @a run attribute @s minecraft:safe_fall_distance base set 100
 effect give @a[tag=oct_hunter] minecraft:strength infinite 50 true
 effect give @a[tag=oct_hunter] minecraft:speed infinite 3 true
 effect give @a[tag=oct_hunter] minecraft:dolphins_grace infinite 3 true
-effect give @a[tag=oct_hunter] minecraft:jump_boost infinite 6 true
+# effect give @a[tag=oct_hunter] minecraft:jump_boost infinite 6 true
 execute as @a[tag=!oct_hunter] run attribute @s minecraft:scale base set 0.5
 execute as @a[tag=oct_hunter] run attribute @s minecraft:scale base set 1
-# Immobilize hunnter
+# Immobilize hunter
 execute as @a[tag=oct_hunter] run function trackbreak:immobilize
+effect clear @a[tag=oct_hunter] minecraft:jump_boost
 
 # Global effects: invisibility and adventure mode
 effect give @a minecraft:invisibility infinite 1 true

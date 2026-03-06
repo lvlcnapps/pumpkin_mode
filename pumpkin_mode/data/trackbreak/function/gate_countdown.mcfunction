@@ -5,6 +5,7 @@ execute if score gate_countdown gate_counter matches 0 run title @a title {"text
 
 # 1 -> 2 transition: open inner gate, mobilize hunter
 execute if score gate_countdown gate_counter matches 0 run execute as @a[tag=oct_hunter] run function trackbreak:immobilize_undo
+execute if score gate_countdown gate_counter matches 0 run execute as @a[tag=oct_hunter] run effect give @a[tag=oct_hunter] minecraft:jump_boost infinite 6 true
 execute if score gate_countdown gate_counter matches 0 run fill -7062 76 7937 -7059 77 7937 minecraft:air
 execute if score gate_countdown gate_counter matches 0 run scoreboard players set gate_state gate_counter 2
 
