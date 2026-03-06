@@ -106,6 +106,11 @@ execute as @e[tag=axe_pickup_display] if score @s axe_bobbing matches 40.. run s
 
 function trackbreak:fill_witcher
 
+# Torches 
+
+particle minecraft:flame -7022 79 7984 0.1 0.2 0.1 0.001 2
+particle minecraft:flame -7020 79 7984 0.1 0.2 0.1 0.001 2
+
 # execute if block -7060 85 7965 minecraft:water run setblock -7061 89 7963 minecraft:end_stone_brick_wall[waterlogged=false]
 # execute if block -7059 86 7962 air run setblock -7061 89 7963 minecraft:end_stone_brick_wall[waterlogged=true]
 
