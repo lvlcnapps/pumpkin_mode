@@ -100,7 +100,7 @@ execute as @e[tag=console] run data remove entity @s interaction
 
 # Whitcher quest management. TODO: isolate into separate function
 execute as @e[tag=get_axe] at @s on target run execute as @s[tag=oct_hunter] run data remove entity @n[tag=get_axe] interaction
-execute as @e[tag=get_axe] on target run give @s iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]]
+execute as @e[tag=get_axe] on target run give @s iron_axe[custom_data={axe:1}, custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]]
 execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[tag=axe_pickup_display]
 execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[tag=axe_pickup_text]
 execute as @e[tag=get_axe] if data entity @s interaction run kill @s
@@ -110,6 +110,10 @@ execute as @e[tag=axe_pickup_display] run scoreboard players add @s axe_bobbing 
 execute as @e[tag=axe_pickup_display] at @s if score @s axe_bobbing matches 1..20 run tp @s ~ ~0.01 ~
 execute as @e[tag=axe_pickup_display] at @s if score @s axe_bobbing matches 21..40 run tp @s ~ ~-0.01 ~
 execute as @e[tag=axe_pickup_display] if score @s axe_bobbing matches 40.. run scoreboard players set @s axe_bobbing 0
+
+execute as @p[scores={dropped_axe=1..}] at @n[type=item, nbt={Item:{components:{"minecraft:custom_data":{axe:1}}}}] run function trackbreak:gameplay/spawn_axe
+kill @n[type=item, nbt={Item:{components:{"minecraft:custom_data":{axe:1}}}}]
+scoreboard players set @a dropped_axe 0
 
 function trackbreak:fill_witcher
 
