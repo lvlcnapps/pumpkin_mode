@@ -20,6 +20,7 @@ scoreboard players set player_count pumpkin_counter 1
 # scoreboard objectives setdisplay sidebar dsds
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 scoreboard players set p2_count pumpkin_counter -1
+execute as @a store result score @s UUID run data get entity @s UUID[0]
 
 bossbar set minecraft:bb1 max 20
 bossbar set minecraft:bb1 style notched_20

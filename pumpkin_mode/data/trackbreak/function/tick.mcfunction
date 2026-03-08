@@ -47,17 +47,17 @@ execute as @a run scoreboard players operation @s neg_player_view -= @s player_v
 
 execute as @a store result score @s player_view_y run data get entity @s Rotation[1]
 
-# execute as @a[x=-7036,y=85,z=7960, dx=0, dy=1, dz=0, scores={is_mirroring=0}, tag=!oct_hunter] run function trackbreak:make_mirror
-# execute as @a[x=-7038,y=85,z=7960, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
-# 
-# execute as @a[x=-7036,y=85,z=7988, dx=0, dy=1, dz=0, scores={is_mirroring=0}, tag=!oct_hunter] run function trackbreak:make_mirror
-# execute as @a[x=-7038,y=85,z=7988, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
-# 
-# execute as @a[x=-7036,y=90,z=7979, dx=0, dy=1, dz=0, scores={is_mirroring=0}, tag=!oct_hunter] run function trackbreak:make_mirror
-# execute as @a[x=-7038,y=90,z=7979, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
+execute as @a[x=-7036,y=85,z=7960, dx=0, dy=1, dz=0, scores={is_mirroring=0}, tag=!oct_hunter] run function trackbreak:make_mirror
+execute as @a[x=-7038,y=85,z=7960, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
 
-#execute as @a[scores={is_mirroring=1..}] run function trackbreak:is_mirror_dead
-#execute in minecraft:overworld as @a[scores={is_mirroring=1..}] run function trackbreak:tick_mirror
+execute as @a[x=-7036,y=85,z=7988, dx=0, dy=1, dz=0, scores={is_mirroring=0}, tag=!oct_hunter] run function trackbreak:make_mirror
+execute as @a[x=-7038,y=85,z=7988, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
+
+execute as @a[x=-7026,y=83,z=7960, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
+execute as @a[x=-7026,y=83,z=7988, dx=0, dy=1, dz=0, scores={is_mirroring=1}] run function trackbreak:kill_mirror
+
+execute as @a[scores={is_mirroring=1..}] run function trackbreak:is_mirror_dead
+execute in minecraft:overworld as @a[scores={is_mirroring=1..}] run function trackbreak:tick_mirror
 
 # Handle pumpkin breaking
 execute as @a[scores={pumpkin_breaks=1..}] run function trackbreak:on_break
