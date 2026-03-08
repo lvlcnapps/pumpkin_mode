@@ -1,2 +1,3 @@
-summon minecraft:interaction ~ ~1 ~ {Tags:["get_axe"]}
-summon item_display ~ ~1.5 ~ {Tags:["axe_pickup_display"],item:{id:"minecraft:diamond_axe"},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}
+summon minecraft:interaction ~ ~ ~ {Tags:["get_axe"]}
+summon item_display ~ ~0.5 ~ {Tags:["axe_pickup_display"],item:{id:"minecraft:iron_axe"},transformation:{left_rotation:[0f,0f,0f,1f],right_rotation:[0f,0f,0f,1f],translation:[0f,0f,0f],scale:[0.8f,0.8f,0.8f]}}
+summon minecraft:text_display ~ ~1 ~ {text:["",{color:"#ffff55",text:"Нажми "},{color:"#55ff55",text:"[ПКМ]"},"\nчтобы забрать\n",{color:"#55ffff",text:"топор"}],billboard:center,Tags:["axe_pickup_text"]}

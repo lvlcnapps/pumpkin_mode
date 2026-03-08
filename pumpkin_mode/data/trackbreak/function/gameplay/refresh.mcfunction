@@ -11,6 +11,7 @@ clear @a
 kill @e[tag=cadaver]
 kill @e[tag=axe_pickup_display]
 kill @e[tag=get_axe]
+kill @e[tag=axe_pickup_text]
 
 scoreboard players set data pumpkin_counter 0
 scoreboard players set phase pumpkin_counter 1

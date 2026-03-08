@@ -92,10 +92,17 @@ execute as @n[tag=pr_room_esc] on target at @s run playsound minecraft:block.vau
 execute as @n[tag=pr_room_esc] on target run tp @s -7060.0 94.0 7991.0 180 0
 execute if data entity @n[tag=pr_room_esc] interaction run data remove entity @n[tag=pr_room_esc] interaction
 
+execute as @e[tag=rand_hunter] on target run function trackbreak:gameplay/rand_hunter
+execute as @e[tag=rand_hunter] run data remove entity @s interaction
+
+execute as @e[tag=console] on target if entity @s[tag=admin] run trigger admin
+execute as @e[tag=console] run data remove entity @s interaction
+
 # Whitcher quest management. TODO: isolate into separate function
 execute as @e[tag=get_axe] at @s on target run execute as @s[tag=oct_hunter] run data remove entity @n[tag=get_axe] interaction
 execute as @e[tag=get_axe] on target run give @s iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]]
-execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[type=minecraft:item_display]
+execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[tag=axe_pickup_display]
+execute as @e[tag=get_axe] if data entity @s interaction at @s run kill @n[tag=axe_pickup_text]
 execute as @e[tag=get_axe] if data entity @s interaction run kill @s
 
 execute as @e[tag=axe_pickup_display] at @s run tp @s ~ ~ ~ ~3 ~
