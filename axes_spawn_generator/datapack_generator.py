@@ -9,6 +9,24 @@ import random
 from typing import List, Dict, Set, Tuple
 
 
+DEBUG_MODE_OFF = 'off'
+DEBUG_MODE_BRIEF = 'brief'
+DEBUG_MODE_ALL = 'all'
+
+
+def normalize_debug_mode(debug_mode: str) -> str:
+    """
+    Normalize configured debug mode and validate supported values.
+    """
+    normalized_mode = debug_mode.strip().lower()
+    valid_modes = {DEBUG_MODE_OFF, DEBUG_MODE_BRIEF, DEBUG_MODE_ALL}
+    if normalized_mode not in valid_modes:
+        raise ValueError(
+            f"Unsupported debug mode '{debug_mode}'. Expected one of: {', '.join(sorted(valid_modes))}"
+        )
+    return normalized_mode
+
+
 def parse_csv_adjacency(csv_filepath: str) -> Tuple[List[str], Dict[str, Set[str]]]:
     """
     Parse CSV adjacency matrix to get locations and their adjacencies.
@@ -111,11 +129,13 @@ def generate_adjacency_data(locations: List[str], adjacency: Dict[str, Set[str]]
 
 
 def generate_spawn_location_functions(locations: List[str], coordinates: Dict[str, Tuple[int, int, int]], 
-                                     output_dir: str, debug_enabled: bool = False):
+                                     output_dir: str, debug_mode: str = DEBUG_MODE_OFF):
     """
     Generate functions to spawn axe at specific locations.
     Each function checks if location is available, spawns axe, and marks area unavailable.
     """
+    debug_mode = normalize_debug_mode(debug_mode)
+
     for loc in locations:
         if loc not in coordinates:
             print(f"Warning: No coordinates found for {loc}")
@@ -128,7 +148,7 @@ def generate_spawn_location_functions(locations: List[str], coordinates: Dict[st
             f"# Attempt to spawn axe at {loc}",
         ]
         
-        if debug_enabled:
+        if debug_mode == DEBUG_MODE_ALL:
             content.append(f"tellraw @a [{{\"text\":\"[DEBUG] \",\"color\":\"gray\"}},{{\"text\":\"Trying to spawn axe at {loc}...\",\"color\":\"white\"}}]")
         
         content.extend([
@@ -137,8 +157,9 @@ def generate_spawn_location_functions(locations: List[str], coordinates: Dict[st
             f"execute if score {loc} axe_available matches 1 run summon minecraft:text_display {x} {y+1} {z} {{text:[\"\",{{color:\"#ffff55\",text:\"Нажми \"}},{{color:\"#55ff55\",text:\"[ПКМ]\"}},\"\\nчтобы забрать\\n\",{{color:\"#55ffff\",text:\"топор\"}}],billboard:center,Tags:[\"axe_pickup_text\"]}}",
         ])
         
-        if debug_enabled:
+        if debug_mode in {DEBUG_MODE_BRIEF, DEBUG_MODE_ALL}:
             content.append(f"execute if score {loc} axe_available matches 1 run tellraw @a [{{\"text\":\"[DEBUG] \",\"color\":\"gray\"}},{{\"text\":\"✓ Successfully spawned axe at {loc} \",\"color\":\"green\"}},{{\"text\":\"({x}, {y}, {z})\",\"color\":\"aqua\"}}]")
+        if debug_mode == DEBUG_MODE_ALL:
             content.append(f"execute if score {loc} axe_available matches 0 run tellraw @a [{{\"text\":\"[DEBUG] \",\"color\":\"gray\"}},{{\"text\":\"✗ Location {loc} unavailable\",\"color\":\"red\"}}]")
         
         content.extend([
@@ -218,11 +239,13 @@ def generate_main_spawn_function(output_dir: str):
         f.write('\n'.join(content))
 
 
-def generate_retry_spawn_function(output_dir: str, debug_enabled: bool = False):
+def generate_retry_spawn_function(output_dir: str, debug_mode: str = DEBUG_MODE_OFF):
     """
     Generate retry wrapper around spawn_axes_main.
     Retries full spawn process up to 10 times if target was not reached.
     """
+    debug_mode = normalize_debug_mode(debug_mode)
+
     content = [
         "# Retry full spawn process until target is reached",
         "# Hard limit: 10 retries",
@@ -238,7 +261,7 @@ def generate_retry_spawn_function(output_dir: str, debug_enabled: bool = False):
         "scoreboard players add spawn_retries axe_counter 1",
     ]
 
-    if debug_enabled:
+    if debug_mode == DEBUG_MODE_ALL:
         content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Retry attempt #\",\"color\":\"yellow\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
 
     content.extend([
@@ -274,10 +297,12 @@ def generate_setup_function(output_dir: str):
         f.write('\n'.join(content))
 
 
-def generate_start_function(output_dir: str, debug_enabled: bool = False):
+def generate_start_function(output_dir: str, debug_mode: str = DEBUG_MODE_OFF):
     """
     Generate convenience function to start the spawn process.
     """
+    debug_mode = normalize_debug_mode(debug_mode)
+
     content = [
         "# Start spawning axes using scoreboard value axes_count in pumpkin_counter",
         "scoreboard players operation axes_target axe_counter = axes_count pumpkin_counter",
@@ -286,14 +311,20 @@ def generate_start_function(output_dir: str, debug_enabled: bool = False):
         "scoreboard players set spawn_retries axe_counter 0",
     ]
     
-    if debug_enabled:
+    if debug_mode == DEBUG_MODE_ALL:
         content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Starting axe spawn process for target: \",\"color\":\"yellow\"},{\"score\":{\"name\":\"axes_target\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
-    
+
     content.extend([
+        "# Initialize availability and counters for first attempt",
+        "function trackbreak:spawn_axes/init_axe_spawns",
+        "scoreboard players set spawn_attempts axe_counter 0",
+        "function trackbreak:spawn_axes/spawn_axes_main",
+        "",
+        "# Retry if first attempt did not reach target",
         "function trackbreak:spawn_axes/retry_spawn",
     ])
     
-    if debug_enabled:
+    if debug_mode == DEBUG_MODE_ALL:
         content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Spawned \",\"color\":\"yellow\"},{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"},\"color\":\"green\"},{\"text\":\" axes after retries: \",\"color\":\"yellow\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
     else:
         content.append("tellraw @a [{\"text\":\"Spawned axes: \",\"extra\":[{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"}}]},{\"text\":\" (retries: \",\"color\":\"gray\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"gray\"},{\"text\":\")\",\"color\":\"gray\"}]")
@@ -317,9 +348,14 @@ def main():
     # Spawn settings are now dynamic:
     # axes_count in pumpkin_counter defines how many axes to spawn
     
-    # Debug mode - shows detailed spawn messages
-    debug_enabled = True  # Set to False to disable debug messages
+    # Debug mode options: 'off', 'brief', 'all'
+    #  - off: disable debug messages
+    #  - brief: log only successful spawn attempts
+    #  - all: verbose logs for start, retries, successes, and failed attempts
+    debug_mode = DEBUG_MODE_BRIEF
     # =======================================================
+
+    debug_mode = normalize_debug_mode(debug_mode)
     
     import os
     os.makedirs(output_directory, exist_ok=True)
@@ -333,7 +369,7 @@ def main():
     print(f"Found {len(coordinates)} coordinate entries")
     
     print(f"\nGenerating datapack functions to {output_directory}/...")
-    print(f"Debug mode: {'ENABLED' if debug_enabled else 'DISABLED'}")
+    print(f"Debug mode: {debug_mode.upper()}")
     
     print("  - setup.mcfunction")
     generate_setup_function(output_directory)
@@ -345,7 +381,7 @@ def main():
     generate_adjacency_data(locations, adjacency, output_directory)
     
     print(f"  - {len(locations)} spawn_at_*.mcfunction files")
-    generate_spawn_location_functions(locations, coordinates, output_directory, debug_enabled)
+    generate_spawn_location_functions(locations, coordinates, output_directory, debug_mode)
     
     print("  - random_number.mcfunction")
     generate_random_number_function(output_directory)
@@ -357,10 +393,10 @@ def main():
     generate_main_spawn_function(output_directory)
 
     print("  - retry_spawn.mcfunction")
-    generate_retry_spawn_function(output_directory, debug_enabled)
+    generate_retry_spawn_function(output_directory, debug_mode)
     
     print("  - start_spawn.mcfunction")
-    generate_start_function(output_directory, debug_enabled)
+    generate_start_function(output_directory, debug_mode)
     
     print(f"\n{'='*70}")
     print("Done! Generated all datapack functions.")
@@ -375,15 +411,17 @@ def main():
     print(f"  - Locations: {len(locations)}")
     print("  - Target axes: scoreboard player axes_count in objective pumpkin_counter")
     print("  - Max attempts: target * 10")
-    print(f"  - Debug mode: {'ENABLED' if debug_enabled else 'DISABLED'}")
+    print(f"  - Debug mode: {debug_mode}")
     print(f"\nTo use in Minecraft:")
     print(f"1. Run once: /function trackbreak:spawn_axes/setup")
-    print(f"2. To spawn axes: /function trackbreak:spawn_axes/start_spawn")
+    print(f"2. Set target: /scoreboard players set axes_count pumpkin_counter <count>")
+    print(f"3. To spawn axes: /function trackbreak:spawn_axes/start_spawn")
     print(f"\nConfiguration:")
     print(f"  - Input CSV: {csv_file}")
     print(f"  - Locations: {len(locations)}")
     print("  - Target axes: scoreboard player axes_count in objective pumpkin_counter")
     print("  - Max attempts: target * 10")
+    print(f"  - Debug mode: {debug_mode}")
 
 
 if __name__ == "__main__":
