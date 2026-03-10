@@ -352,7 +352,7 @@ def main():
     #  - off: disable debug messages
     #  - brief: log only successful spawn attempts
     #  - all: verbose logs for start, retries, successes, and failed attempts
-    debug_mode = DEBUG_MODE_BRIEF
+    debug_mode = DEBUG_MODE_OFF
     # =======================================================
 
     debug_mode = normalize_debug_mode(debug_mode)

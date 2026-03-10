@@ -6,3 +6,4 @@ scoreboard objectives add constants dummy
 
 # Set constants
 scoreboard players set #-1 constants -1
+scoreboard players set #10 constants 10

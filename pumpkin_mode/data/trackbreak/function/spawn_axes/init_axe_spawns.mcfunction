@@ -14,7 +14,6 @@ scoreboard players set staircase axe_available 1
 scoreboard players set svetov axe_available 1
 scoreboard players set theatre axe_available 1
 scoreboard players set ocean_room axe_available 1
-scoreboard players set ocean_room axe_available 1
 scoreboard players set orange_room axe_available 1
 scoreboard players set princess axe_available 1
 scoreboard players set attic axe_available 1
