@@ -190,21 +190,21 @@ def generate_random_number_function(output_dir: str):
         f.write('\n'.join(content))
 
 
-def generate_main_spawn_function(target_axes: int, output_dir: str):
+def generate_main_spawn_function(output_dir: str):
     """
-    Generate main function that spawns specified number of axes.
-    Iteratively tries to spawn until target is reached or max attempts exceeded.
+    Generate main function that spawns axes until dynamic target is reached.
+    Target and max attempts are read from scoreboard values prepared in start function.
     """
     content = [
-        f"# Main function to spawn {target_axes} axes",
-        f"# Will attempt up to {target_axes * 10} times",
+        "# Main function to spawn target number of axes",
+        "# Will attempt up to max_spawn_attempts (computed from axes_count * 10)",
         "",
         "# Check if we've spawned enough axes",
-        f"execute if score axes_spawned axe_counter matches {target_axes}.. run return 1",
+        "execute if score axes_spawned axe_counter >= axes_target axe_counter run return 1",
         "",
         "# Check if we've exceeded max attempts",
-        f"execute if score spawn_attempts axe_counter matches {target_axes * 10}.. run say Failed to spawn all axes - not enough valid locations",
-        f"execute if score spawn_attempts axe_counter matches {target_axes * 10}.. run return 0",
+        "execute if score spawn_attempts axe_counter >= max_spawn_attempts axe_counter run say Failed to spawn all axes - not enough valid locations",
+        "execute if score spawn_attempts axe_counter >= max_spawn_attempts axe_counter run return 0",
         "",
         "# Try to spawn an axe",
         "scoreboard players add spawn_attempts axe_counter 1",
@@ -215,6 +215,42 @@ def generate_main_spawn_function(target_axes: int, output_dir: str):
     ]
     
     with open(f"{output_dir}/spawn_axes_main.mcfunction", 'w') as f:
+        f.write('\n'.join(content))
+
+
+def generate_retry_spawn_function(output_dir: str, debug_enabled: bool = False):
+    """
+    Generate retry wrapper around spawn_axes_main.
+    Retries full spawn process up to 10 times if target was not reached.
+    """
+    content = [
+        "# Retry full spawn process until target is reached",
+        "# Hard limit: 10 retries",
+        "",
+        "# Success condition",
+        "execute if score axes_spawned axe_counter >= axes_target axe_counter run return 1",
+        "",
+        "# Stop when retry limit is reached",
+        "execute if score spawn_retries axe_counter matches 10.. run say Failed to spawn all axes after 10 retries",
+        "execute if score spawn_retries axe_counter matches 10.. run return 0",
+        "",
+        "# Start next retry attempt",
+        "scoreboard players add spawn_retries axe_counter 1",
+    ]
+
+    if debug_enabled:
+        content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Retry attempt #\",\"color\":\"yellow\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
+
+    content.extend([
+        "function trackbreak:spawn_axes/init_axe_spawns",
+        "scoreboard players set spawn_attempts axe_counter 0",
+        "function trackbreak:spawn_axes/spawn_axes_main",
+        "",
+        "# Continue retry loop if still not enough axes",
+        "function trackbreak:spawn_axes/retry_spawn",
+    ])
+
+    with open(f"{output_dir}/retry_spawn.mcfunction", 'w') as f:
         f.write('\n'.join(content))
 
 
@@ -231,33 +267,36 @@ def generate_setup_function(output_dir: str):
         "",
         "# Set constants",
         "scoreboard players set #-1 constants -1",
+        "scoreboard players set #10 constants 10",
     ]
     
     with open(f"{output_dir}/setup.mcfunction", 'w') as f:
         f.write('\n'.join(content))
 
 
-def generate_start_function(target_axes: int, output_dir: str, debug_enabled: bool = False):
+def generate_start_function(output_dir: str, debug_enabled: bool = False):
     """
     Generate convenience function to start the spawn process.
     """
     content = [
-        f"# Start spawning {target_axes} axes",
-        "function trackbreak:spawn_axes/init_axe_spawns",
-        "scoreboard players set spawn_attempts axe_counter 0",
+        "# Start spawning axes using scoreboard value axes_count in pumpkin_counter",
+        "scoreboard players operation axes_target axe_counter = axes_count pumpkin_counter",
+        "scoreboard players operation max_spawn_attempts axe_counter = axes_target axe_counter",
+        "scoreboard players operation max_spawn_attempts axe_counter *= #10 constants",
+        "scoreboard players set spawn_retries axe_counter 0",
     ]
     
     if debug_enabled:
-        content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Starting axe spawn process...\",\"color\":\"yellow\"}]")
+        content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Starting axe spawn process for target: \",\"color\":\"yellow\"},{\"score\":{\"name\":\"axes_target\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
     
     content.extend([
-        "function trackbreak:spawn_axes/spawn_axes_main",
+        "function trackbreak:spawn_axes/retry_spawn",
     ])
     
     if debug_enabled:
-        content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Spawned \",\"color\":\"yellow\"},{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"},\"color\":\"green\"},{\"text\":\" axes in \",\"color\":\"yellow\"},{\"score\":{\"name\":\"spawn_attempts\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"},{\"text\":\" attempts\",\"color\":\"yellow\"}]")
+        content.append("tellraw @a [{\"text\":\"[DEBUG] \",\"color\":\"gray\"},{\"text\":\"Spawned \",\"color\":\"yellow\"},{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"},\"color\":\"green\"},{\"text\":\" axes after retries: \",\"color\":\"yellow\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"aqua\"}]")
     else:
-        content.append("tellraw @a [{\"text\":\"Spawned axes: \",\"extra\":[{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"}}]}]")
+        content.append("tellraw @a [{\"text\":\"Spawned axes: \",\"extra\":[{\"score\":{\"name\":\"axes_spawned\",\"objective\":\"axe_counter\"}}]},{\"text\":\" (retries: \",\"color\":\"gray\"},{\"score\":{\"name\":\"spawn_retries\",\"objective\":\"axe_counter\"},\"color\":\"gray\"},{\"text\":\")\",\"color\":\"gray\"}]")
     
     with open(f"{output_dir}/start_spawn.mcfunction", 'w') as f:
         f.write('\n'.join(content))
@@ -269,14 +308,14 @@ def main():
     """
     # ==================== CONFIGURATION ====================
     # Input files
-    csv_file = 'proximity_graph.csv'  # or 'proximity_graph_threshold.csv'
+    csv_file = 'proximity_graph_igor_new.csv'  # or 'proximity_graph_threshold.csv'
     coords_file = 'axe_locations.tmp'
     
     # Output directory (datapack function folder)
     output_directory = '../pumpkin_mode/data/trackbreak/function/spawn_axes'
     
-    # Spawn settings
-    target_axes_count = 5  # Number of axes to spawn
+    # Spawn settings are now dynamic:
+    # axes_count in pumpkin_counter defines how many axes to spawn
     
     # Debug mode - shows detailed spawn messages
     debug_enabled = True  # Set to False to disable debug messages
@@ -315,10 +354,13 @@ def main():
     generate_random_spawn_function(locations, output_directory)
     
     print("  - spawn_axes_main.mcfunction")
-    generate_main_spawn_function(target_axes_count, output_directory)
+    generate_main_spawn_function(output_directory)
+
+    print("  - retry_spawn.mcfunction")
+    generate_retry_spawn_function(output_directory, debug_enabled)
     
     print("  - start_spawn.mcfunction")
-    generate_start_function(target_axes_count, output_directory, debug_enabled)
+    generate_start_function(output_directory, debug_enabled)
     
     print(f"\n{'='*70}")
     print("Done! Generated all datapack functions.")
@@ -331,8 +373,8 @@ def main():
     print(f"\nConfiguration:")
     print(f"  - Input CSV: {csv_file}")
     print(f"  - Locations: {len(locations)}")
-    print(f"  - Target axes: {target_axes_count}")
-    print(f"  - Max attempts: {target_axes_count * 10}")
+    print("  - Target axes: scoreboard player axes_count in objective pumpkin_counter")
+    print("  - Max attempts: target * 10")
     print(f"  - Debug mode: {'ENABLED' if debug_enabled else 'DISABLED'}")
     print(f"\nTo use in Minecraft:")
     print(f"1. Run once: /function trackbreak:spawn_axes/setup")
@@ -340,8 +382,8 @@ def main():
     print(f"\nConfiguration:")
     print(f"  - Input CSV: {csv_file}")
     print(f"  - Locations: {len(locations)}")
-    print(f"  - Target axes: {target_axes_count}")
-    print(f"  - Max attempts: {target_axes_count * 10}")
+    print("  - Target axes: scoreboard player axes_count in objective pumpkin_counter")
+    print("  - Max attempts: target * 10")
 
 
 if __name__ == "__main__":
