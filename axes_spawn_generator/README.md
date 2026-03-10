@@ -18,8 +18,9 @@ Tools for generating Minecraft datapack code that spawns axes at non-adjacent lo
 - Output: `../pumpkin_mode/data/trackbreak/function/spawn_axes/` (58 `.mcfunction` files)
 - Features:
   - Recursive spawn logic with availability masking
+  - Dynamic target from scoreboard value `axes_count` in objective `pumpkin_counter` (ex `/scoreboard players set axes_count pumpkin_counter 2`)
   - Debug messages (toggleable via `debug_enabled` flag)
-  - Retries until target axes placed or max attempts exceeded
+  - Retries full spawn process if deadlock occurs (hard limit: 10 retries)
 
 **`graph_verificator.py`** — Exhaustive outcome analysis  
 - Input: `proximity_graph_*.csv`, target axes count
@@ -51,16 +52,27 @@ python3 datapack_generator.py
 
 Config in `main()`:
 - `csv_file` — choose `proximity_graph_knn.csv` or `proximity_graph_threshold.csv`
-- `target_axes_count` — axes to spawn (default: 10)
 - `debug_enabled` — show spawn debug messages (default: True)
 
 Outputs 58 files to `../pumpkin_mode/data/trackbreak/function/spawn_axes/`
 
-**Minecraft setup:**
+**Minecraft setup and usage:**
 ```
-/function trackbreak:spawn_axes/setup          # Run once
-/function trackbreak:spawn_axes/start_spawn    # Spawn axes
+/function trackbreak:spawn_axes/setup
+scoreboard players set axes_count pumpkin_counter 10
+/function trackbreak:spawn_axes/start_spawn
 ```
+
+What these commands do:
+- `setup` creates required objectives and constants used by the spawn system.
+- `axes_count pumpkin_counter` defines how many axes to spawn for the next run.
+- `start_spawn` copies `axes_count -> axes_target`, runs spawn attempts, and retries from scratch if needed.
+
+Runtime behavior in Minecraft:
+- Per retry, the system attempts to place axes until target is reached or max attempts is hit.
+- If target was not reached, it reinitializes availability and retries.
+- Retry limit is `10`; after that it reports failure.
+- Final chat output reports spawned axes and retry count.
 
 ### 3. Verify Outcomes & Probabilities
 
@@ -94,7 +106,7 @@ python3 graph_verificator.py --csv proximity_graph_knn.csv --axes 5 \
 2. Randomly pick an available location
 3. Spawn axe there; mark location + adjacent as unavailable
 4. Repeat until target reached or no more available locations
-5. Retry entire process if deadlock before reaching target
+5. Retry entire process if deadlock before reaching target (up to 10 retries)
 
 ### Verification (Exhaustive Search)
 
