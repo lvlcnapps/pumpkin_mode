@@ -173,6 +173,48 @@ def decode_outcome(mask: int, names: List[str]) -> List[str]:
     return result
 
 
+def compute_deadlock_statistics(neighbors: List[int], axes_to_spawn: int) -> dict:
+    """Count successful vs deadlock paths in the spawn algorithm.
+    
+    Returns dict with:
+    - success_paths: number of paths reaching exactly axes_to_spawn
+    - deadlock_paths: number of paths that fail before reaching target
+    - total_paths: sum of both
+    """
+    n = len(neighbors)
+    full_available = (1 << n) - 1
+
+    @lru_cache(maxsize=None)
+    def count_paths(available_mask: int, remaining: int) -> Tuple[int, int]:
+        """Return (success_paths, deadlock_paths)."""
+        if remaining == 0:
+            return (1, 0)
+        
+        if available_mask == 0:
+            # Deadlock: can't place any more axes
+            return (0, 1)
+        
+        total_success = 0
+        total_deadlock = 0
+        
+        for v in iter_set_bits(available_mask):
+            blocked = (1 << v) | neighbors[v]
+            next_available = available_mask & ~blocked
+            child_success, child_deadlock = count_paths(next_available, remaining - 1)
+            total_success += child_success
+            total_deadlock += child_deadlock
+        
+        return (total_success, total_deadlock)
+    
+    success, deadlock = count_paths(full_available, axes_to_spawn)
+    
+    return {
+        "success_paths": success,
+        "deadlock_paths": deadlock,
+        "total_paths": success + deadlock,
+    }
+
+
 def compute_room_distribution(neighbors: List[int], axes_to_spawn: int) -> dict:
     """Compute per-room spawn probabilities with retry-on-deadlock semantics.
 
@@ -241,6 +283,7 @@ def run_verification(
 
     max_axes = max_spawnable_axes(neighbors)
     outcomes = compute_exact_outcomes(neighbors, axes_to_spawn, include_partials)
+    deadlock_stats = compute_deadlock_statistics(neighbors, axes_to_spawn)
 
     outcomes_by_size: Dict[int, List[dict]] = defaultdict(list)
     for mask, path_count in outcomes.items():
@@ -276,6 +319,9 @@ def run_verification(
             "exact_k_feasible": axes_to_spawn <= max_axes,
             "exact_k_distinct_outcomes": exact_k_count,
             "exact_k_total_paths": exact_k_paths,
+            "deadlock_paths": deadlock_stats["deadlock_paths"],
+            "success_paths": deadlock_stats["success_paths"],
+            "total_attempts": deadlock_stats["total_paths"],
             "sizes_found": sorted(outcomes_by_size.keys()),
         },
         "outcomes_by_size": dict(outcomes_by_size),
@@ -310,6 +356,19 @@ def print_summary(result: dict, show_limit: int, show_distribution: bool, top_ro
     print(f"  Exact-k distinct outcomes: {summary['exact_k_distinct_outcomes']}")
     print(f"  Exact-k total paths: {summary['exact_k_total_paths']}")
     print(f"  Outcome sizes found: {summary['sizes_found']}")
+    
+    # Display deadlock statistics
+    if 'success_paths' in summary:
+        success = summary['success_paths']
+        deadlock = summary['deadlock_paths']
+        total = summary['total_attempts']
+        if total > 0:
+            success_rate = (success / total) * 100
+            print(f"\nDeadlock statistics:")
+            print(f"  Success paths: {success}")
+            print(f"  Deadlock paths: {deadlock}")
+            print(f"  Total attempts: {total}")
+            print(f"  Success rate: {success_rate:.1f}%")
 
     k = info["axes_to_spawn"]
     outcomes_k = result["outcomes_by_size"].get(k, [])
