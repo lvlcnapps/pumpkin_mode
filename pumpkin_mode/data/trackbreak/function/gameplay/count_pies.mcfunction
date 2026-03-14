@@ -1,4 +1,4 @@
-execute in minecraft:overworld if data block -7051 76 7945 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
+execute in minecraft:overworld if data block -7050 81 7938 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 execute in minecraft:overworld if data block -7082 76 7959 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 execute in minecraft:overworld if data block -7083 77 7971 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
 execute in minecraft:overworld if data block -7072 78 7989 Items[{id:"minecraft:pumpkin_pie"}] run scoreboard players add data pumpkin_counter 1
