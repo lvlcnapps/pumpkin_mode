@@ -201,6 +201,8 @@ execute if score cam9 cam_radar matches 1.. run setblock -7049 78 7949 minecraft
 execute if score cam9 cam_radar matches 0 run setblock -7049 78 7949 minecraft:player_head[rotation=8]{custom_name:'{"text":"Компьютер (выключен)","color":"gold","underlined":true,"bold":true,"italic":false}',profile:{id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTViMzRjNmNlZTY4NGQ3MTcxNGIzYTFjNzExNTExY2JkNjkyNDQ3ODIwYmM5YTExMzYyOGMxZDM1ODA0ODI1ZSJ9fX0="}]}}
 scoreboard players set cam9 cam_radar 0
 
+execute as @a[tag=!oct_hunter] on attacker run effect give @s minecraft:glowing 1 1 true
+
 # Lobby management
 execute in minecraft:overworld run data modify block -7076 79 7887 front_text.messages set value [["Количество"],["пирогов для"],["победы:"],[{"score":{"name":"act_target","objective":"pumpkin_counter"}}]]
 execute in minecraft:overworld run data modify block -7076 80 7887 front_text.messages set value [["Количество"],["пирогов для"],["топоров:"],[{"score":{"name":"cond_ph_2","objective":"pumpkin_counter"}}]]
