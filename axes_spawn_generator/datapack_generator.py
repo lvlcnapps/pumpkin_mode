@@ -174,12 +174,11 @@ def generate_spawn_location_functions(locations: List[str], coordinates: Dict[st
 def generate_random_spawn_function(locations: List[str], output_dir: str):
     """
     Generate function that randomly picks a location and tries to spawn an axe.
-    Uses Minecraft's random number generation.
+    Uses Minecraft's native random command.
     """
     content = [
-        "# Generate random number from 0 to N-1 where N is number of locations",
-        f"scoreboard players set #max random {len(locations)}",
-        "function trackbreak:spawn_axes/random_number",
+        f"# Pick a random location index from 0 to {len(locations) - 1}",
+        f"execute store result score #result random run random value 0..{len(locations) - 1}",
         "",
         "# Try to spawn at randomly selected location",
     ]
@@ -189,25 +188,6 @@ def generate_random_spawn_function(locations: List[str], output_dir: str):
         content.append(f"execute if score #result random matches {i} run function trackbreak:spawn_axes/spawn_at_{safe_loc}")
     
     with open(f"{output_dir}/try_spawn.mcfunction", 'w') as f:
-        f.write('\n'.join(content))
-
-
-def generate_random_number_function(output_dir: str):
-    """
-    Generate helper function for random number generation.
-    Uses UUID for randomness.
-    """
-    content = [
-        "# Generate random number between 0 and #max",
-        "summon minecraft:area_effect_cloud ~ ~ ~ {Tags:[\"random_uuid\"]}",
-        "execute store result score #result random run data get entity @e[type=minecraft:area_effect_cloud,tag=random_uuid,limit=1] UUID[0]",
-        "kill @e[type=minecraft:area_effect_cloud,tag=random_uuid]",
-        "scoreboard players operation #result random %= #max random",
-        "# Make result positive if negative",
-        "execute if score #result random matches ..-1 run scoreboard players operation #result random *= #-1 constants",
-    ]
-    
-    with open(f"{output_dir}/random_number.mcfunction", 'w') as f:
         f.write('\n'.join(content))
 
 
@@ -382,9 +362,6 @@ def main():
     
     print(f"  - {len(locations)} spawn_at_*.mcfunction files")
     generate_spawn_location_functions(locations, coordinates, output_directory, debug_mode)
-    
-    print("  - random_number.mcfunction")
-    generate_random_number_function(output_directory)
     
     print("  - try_spawn.mcfunction")
     generate_random_spawn_function(locations, output_directory)

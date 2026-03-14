@@ -1,6 +1,5 @@
-# Generate random number from 0 to N-1 where N is number of locations
-scoreboard players set #max random 27
-function trackbreak:spawn_axes/random_number
+# Pick a random location index from 0 to 26
+execute store result score #result random run random value 0..26
 
 # Try to spawn at randomly selected location
 execute if score #result random matches 0 run function trackbreak:spawn_axes/spawn_at_gazebo
