@@ -87,6 +87,9 @@ execute as @e[tag=axes_count_add] run data remove entity @s interaction
 execute as @e[tag=axes_count_remove] on target run execute as @s run scoreboard players remove axes_count pumpkin_counter 1
 execute as @e[tag=axes_count_remove] run data remove entity @s interaction
 
+execute as @e[tag=toggle_easy_mode] on target run execute as @s run function trackbreak:toggle_easy_mode
+execute as @e[tag=toggle_easy_mode] run data remove entity @s interaction
+
 execute as @e[tag=sit_1] on target run execute as @s run ride @s mount @n[type=minecraft:interaction, tag=sit_1]
 execute as @e[tag=sit_1] run data remove entity @s interaction
 
@@ -207,3 +210,5 @@ execute as @a[tag=!oct_hunter] on attacker run effect give @s minecraft:glowing 
 execute in minecraft:overworld run data modify block -7076 79 7887 front_text.messages set value [["Количество"],["пирогов для"],["победы:"],[{"score":{"name":"act_target","objective":"pumpkin_counter"}}]]
 execute in minecraft:overworld run data modify block -7076 80 7887 front_text.messages set value [["Количество"],["пирогов для"],["топоров:"],[{"score":{"name":"cond_ph_2","objective":"pumpkin_counter"}}]]
 execute in minecraft:overworld run data modify block -7074 79 7889 front_text.messages set value [["Количество"],["топоров в"],["игре:"],[{"score":{"name":"axes_count","objective":"pumpkin_counter"}}]]
+execute if score easy_mode pumpkin_counter matches 0 in minecraft:overworld run data modify block -7078 79 7891 front_text.messages set value [["Включить"],["легкий режим"],["для хантера"],["==============>"]]
+execute if score easy_mode pumpkin_counter matches 1 in minecraft:overworld run data modify block -7078 79 7891 front_text.messages set value [["Выключить"],["легкий режим"],["для хантера"],["==============>"]]
