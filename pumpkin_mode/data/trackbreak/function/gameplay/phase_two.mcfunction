@@ -16,7 +16,7 @@ execute as @a[team=specs,tag=!oct_hunter] run scoreboard players add dead pumpki
 scoreboard players operation dead pumpkin_counter -= count_gnomes pumpkin_counter
 execute if score end pumpkin_counter matches 0 if score dead pumpkin_counter matches 0 run function trackbreak:gameplay/end_game
 
-execute as @a[gamemode=adventure, x=-7059, y=76, z=7936, dx=-3, dy=2, dz=-1] run function trackbreak:gameplay/release
-execute as @a[gamemode=adventure, x=-7099, y=76, z=7975, dx=-1, dy=2, dz=2] run function trackbreak:gameplay/release
+execute as @a[tag=!oct_hunter, gamemode=adventure, x=-7059, y=76, z=7936, dx=-3, dy=2, dz=-1] run function trackbreak:gameplay/release
+execute as @a[tag=!oct_hunter, gamemode=adventure, x=-7099, y=76, z=7975, dx=-1, dy=2, dz=2] run function trackbreak:gameplay/release
 
 execute if score p2_count pumpkin_counter matches 0 run function trackbreak:gameplay/end_game

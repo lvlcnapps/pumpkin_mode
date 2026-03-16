@@ -11,6 +11,7 @@ clear @a
 kill @e[tag=cadaver]
 
 function trackbreak:gameplay/kill_axes
+execute as @a run function trackbreak:immobilize_undo
 
 scoreboard players set data pumpkin_counter 0
 scoreboard players set phase pumpkin_counter 1
