@@ -11,15 +11,18 @@ clear @a
 kill @e[tag=cadaver]
 
 function trackbreak:gameplay/kill_axes
+execute as @a run function trackbreak:immobilize_undo
 
 scoreboard players set data pumpkin_counter 0
 scoreboard players set phase pumpkin_counter 1
 scoreboard players set player_count pumpkin_counter 1
+scoreboard players set end pumpkin_counter 0
 # scoreboard players display numberformat Спасшихся: display_ph_2 styled {"color":"red"}
 # scoreboard objectives setdisplay sidebar dsds
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 scoreboard players set p2_count pumpkin_counter -1
 execute as @a store result score @s UUID run data get entity @s UUID[0]
+scoreboard players set Спасшихся: display_ph_2 0
 
 bossbar set minecraft:bb1 max 20
 bossbar set minecraft:bb1 style notched_20
