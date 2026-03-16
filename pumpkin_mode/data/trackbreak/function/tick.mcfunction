@@ -158,6 +158,33 @@ scoreboard players enable @a[tag=admin] admin
 execute as @a[scores={admin=1..}] run dialog show @s trackbreak:admin
 scoreboard players set @a[scores={admin=1..}] admin 0
 
+
+# Forbiden zones management
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7017,y=77,z=7968,dx=6,dy=-15,dz=28,scores={outbound_counter=0}] run scoreboard players add @s outbound_counter 1
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7024,y=77,z=7991,dx=7,dy=13,dz=1,scores={outbound_counter=0}] run scoreboard players add @s outbound_counter 1
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7016,y=77,z=7969,dx=-5,dy=-4,dz=-20,scores={outbound_counter=0}] run scoreboard players add @s outbound_counter 1
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7021,y=75,z=7953,dx=-5,dy=5,dz=-2,scores={outbound_counter=0}] run scoreboard players add @s outbound_counter 1
+
+execute as @a[scores={outbound_counter=1..}] run scoreboard players add @s outbound_counter 1
+
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7017,y=77,z=7968,dx=6,dy=-15,dz=28] run effect give @s minecraft:slowness 1 3
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7024,y=77,z=7991,dx=7,dy=13,dz=1] run effect give @s minecraft:slowness 1 3
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7016,y=77,z=7969,dx=-5,dy=-4,dz=-20] run effect give @s minecraft:slowness 1 3
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7021,y=75,z=7953,dx=-5,dy=5,dz=-2] run effect give @s minecraft:slowness 1 3
+
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7017,y=77,z=7968,dx=6,dy=-15,dz=28] run scoreboard players set @s outbound_last 1
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7024,y=77,z=7991,dx=7,dy=13,dz=1] run scoreboard players set @s outbound_last 2
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7016,y=77,z=7969,dx=-5,dy=-4,dz=-20] run scoreboard players set @s outbound_last 3
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7021,y=75,z=7953,dx=-5,dy=5,dz=-2] run scoreboard players set @s outbound_last 4
+
+execute as @a[tag=!oct_hunter,gamemode=adventure,scores={outbound_counter=40..,outbound_last=1}] run execute positioned -7020 78 7975 run function trackbreak:tp_and_nausea
+execute as @a[tag=!oct_hunter,gamemode=adventure,scores={outbound_counter=40..,outbound_last=2}] run execute positioned -7019 77 7989 run function trackbreak:tp_and_nausea
+execute as @a[tag=!oct_hunter,gamemode=adventure,scores={outbound_counter=40..,outbound_last=3}] run execute positioned -7023 76 7962 run function trackbreak:tp_and_nausea
+execute as @a[tag=!oct_hunter,gamemode=adventure,scores={outbound_counter=40..,outbound_last=4}] run execute positioned -7023 76 7955 run function trackbreak:tp_and_nausea
+
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7019,y=77,z=7971,dx=-5,dy=6,dz=18] run scoreboard players set @s outbound_counter 0
+execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7024,y=79,z=7970,dx=2,dy=-3,dz=-16] run scoreboard players set @s outbound_counter 0
+
 # Radar code, generated automatically. TODO: isolate into separate function
 execute if entity @p[tag=oct_hunter,x=-7067,y=82,z=8000, dx=12, dy=7, dz=-18] run scoreboard players set cam1 cam_radar 1
 execute if score cam1 cam_radar matches 1.. run setblock -7051 80 7949 minecraft:player_head[rotation=8]{custom_name:'{"text":"Компьютер (включен)","color":"gold","underlined":true,"bold":true,"italic":false}',profile:{id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzgzYjgyMmNmMmU1MDE0YzIwMTgxN2U3ZjZmZTExYjA2Y2MyMzFjZTE1YTBhNmI3ZDdkODYzMTMyZTYzMmFjNCJ9fX0="}]}}
