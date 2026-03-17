@@ -9,6 +9,7 @@ team join boots @a
 effect clear @a
 clear @a
 kill @e[tag=cadaver]
+kill @e[tag=test_hb]
 
 function trackbreak:gameplay/kill_axes
 execute as @a run function trackbreak:immobilize_undo

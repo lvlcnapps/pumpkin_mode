@@ -233,6 +233,11 @@ scoreboard players set cam9 cam_radar 0
 
 execute as @a[tag=!oct_hunter] on attacker run effect give @s minecraft:glowing 1 1 true
 
+execute as @e[tag=test_hb] at @s run function trackbreak:hb_set
+execute unless entity @p[gamemode=adventure,tag=!oct_hunter,scores={hb_sys=0}] run scoreboard players set @a hb_sys 0
+
+execute as @e[tag=test_hb] at @s on attacker run execute if entity @s[tag=oct_hunter] run function trackbreak:hb_hit
+
 # Lobby management
 execute in minecraft:overworld run data modify block -7076 79 7887 front_text.messages set value [["Количество"],["пирогов для"],["победы:"],[{"score":{"name":"act_target","objective":"pumpkin_counter"}}]]
 execute in minecraft:overworld run data modify block -7076 80 7887 front_text.messages set value [["Количество"],["пирогов для"],["топоров:"],[{"score":{"name":"cond_ph_2","objective":"pumpkin_counter"}}]]

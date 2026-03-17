@@ -37,6 +37,9 @@ scoreboard players set end pumpkin_counter 0
 
 function trackbreak:gate_init
 
+execute if score easy_mode pumpkin_counter matches 1 at @a[tag=!oct_hunter] run summon minecraft:mannequin ~ ~ ~ {Tags:["test_hb"],active_effects:[{id:resistance,duration:-1,amplifier:5,show_particles:0b}],Silent:1b,NoGravity:1b}
+effect give @e[tag=test_hb] minecraft:invisibility infinite 1 true
+
 # Color management
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 execute as @a[tag=!oct_hunter] run function trackbreak:gameplay/color_gnomes
@@ -52,3 +55,5 @@ item replace entity @a[tag=oct_hunter] weapon.offhand with minecraft:netherite_h
 # Bossbar setup
 bossbar set minecraft:bb1 players sdsdcc2442
 bossbar set minecraft:bb1 players @a
+
+scoreboard players add @a stats_total_games 1
