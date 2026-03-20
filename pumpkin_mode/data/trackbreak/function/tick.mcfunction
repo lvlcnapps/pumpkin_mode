@@ -158,6 +158,18 @@ scoreboard players enable @a[tag=admin] admin
 execute as @a[scores={admin=1..}] run dialog show @s trackbreak:admin
 scoreboard players set @a[scores={admin=1..}] admin 0
 
+execute as @a if score @s svetov_open matches 1.. run setblock -7045 87 7990 air destroy
+execute as @a if score @s svetov_open matches 1.. run scoreboard players set @a svetov_open 0
+
+item replace block -7050 85 7985 container.0 with minecraft:music_disc_ward
+item replace block -7050 85 7985 container.1 with minecraft:music_disc_lava_chicken
+item replace block -7050 85 7985 container.2 with minecraft:music_disc_pigstep
+
+item replace block -7051 86 7985 container.0 with minecraft:music_disc_tears
+item replace block -7051 86 7985 container.1 with minecraft:music_disc_blocks
+item replace block -7051 86 7985 container.2 with minecraft:music_disc_13
+
+execute as @p[tag=oct_hunter, x=-7018, y=61, z=7928, dx=-100, dy=65, dz=100] if predicate trackbreak:is_on_ground run item replace entity @s armor.chest with minecraft:leather_chestplate[minecraft:dyed_color=0]
 
 # Forbiden zones management
 execute as @a[tag=!oct_hunter,gamemode=adventure,x=-7017,y=77,z=7968,dx=6,dy=-15,dz=28,scores={outbound_counter=0}] run scoreboard players add @s outbound_counter 1
