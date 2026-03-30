@@ -14,6 +14,7 @@ kill @e[tag=test_hb]
 function trackbreak:gameplay/kill_axes
 execute as @a run function trackbreak:immobilize_undo
 
+scoreboard players set cam_doors pumpkin_counter 0
 scoreboard players set data pumpkin_counter 0
 scoreboard players set phase pumpkin_counter 1
 scoreboard players set player_count pumpkin_counter 1
