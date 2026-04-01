@@ -67,3 +67,6 @@ scoreboard players set state witcher_quest_state 1
 fill -7051 88 7955 -7051 88 7952 minecraft:redstone_block
 
 function trackbreak:camera_room/open_all_doors
+
+# Kill axes
+function trackbreak:gameplay/kill_axes
