@@ -1,0 +1,3 @@
+scoreboard players set cam_doors pumpkin_counter 0
+function trackbreak:camera_room/open_door_first
+function trackbreak:camera_room/open_door_second

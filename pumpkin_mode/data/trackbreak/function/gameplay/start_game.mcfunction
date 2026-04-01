@@ -1,6 +1,6 @@
 tag @s add oct_hunter
 team join hunter @a[tag=oct_hunter]
-tp @s -7210 63 7981
+tp @s -7082 124 8121
 
 time set 12700
 
@@ -37,12 +37,15 @@ scoreboard players set end pumpkin_counter 0
 
 function trackbreak:gate_init
 
+execute if score easy_mode pumpkin_counter matches 1 at @a[tag=!oct_hunter] run summon minecraft:mannequin ~ ~ ~ {Tags:["test_hb"],active_effects:[{id:resistance,duration:-1,amplifier:5,show_particles:0b}],Silent:1b,NoGravity:1b}
+effect give @e[tag=test_hb] minecraft:invisibility infinite 1 true
+
 # Color management
 data modify storage minecraft:data array set value [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 execute as @a[tag=!oct_hunter] run function trackbreak:gameplay/color_gnomes
 
 # Hunter equipment
-item replace entity @a[tag=oct_hunter] armor.chest with minecraft:leather_chestplate[minecraft:dyed_color=0]
+item replace entity @a[tag=oct_hunter] armor.chest with minecraft:elytra
 item replace entity @a[tag=oct_hunter] armor.legs with minecraft:leather_leggings[minecraft:dyed_color=0]
 item replace entity @a[tag=oct_hunter] armor.feet with minecraft:leather_boots[minecraft:dyed_color=0]
 item replace entity @a[tag=oct_hunter] armor.head with minecraft:player_head[minecraft:custom_name='{"text":"Ксеноморф","color":"gold","underlined":true,"bold":true,"italic":false}',minecraft:lore=['{"text":"ID головы: 11937","color":"gray","italic":false}','{"text":"mcheads.ru","color":"blue","italic":false}'],profile={id:[I;2080793942,-524468218,-1541115779,1949756395],properties:[{name:"textures",value:"eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvM2M2OWJjMjBkOGQ4MzU5MjMxZjM5NTQ2MmUwNjU5YmNiM2Q2MmFkMjBhMjhmN2I1ZDU1YWVlYzg5Yzc3MzY4In19fQ=="}]}] 1
@@ -52,3 +55,5 @@ item replace entity @a[tag=oct_hunter] weapon.offhand with minecraft:netherite_h
 # Bossbar setup
 bossbar set minecraft:bb1 players sdsdcc2442
 bossbar set minecraft:bb1 players @a
+
+scoreboard players add @a stats_total_games 1

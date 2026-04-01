@@ -1,0 +1,17 @@
+{
+  "condition": "minecraft:entity_properties",
+  "entity": "this",
+  "predicate": {
+    "flags": {
+      "is_on_ground": true
+    },
+    "stepping_on": {
+      "blocks": [
+        "#minecraft:all_blocks",
+        "!minecraft:air",
+        "!minecraft:cave_air",
+        "!minecraft:void_air"
+      ]
+    }
+  }
+}
