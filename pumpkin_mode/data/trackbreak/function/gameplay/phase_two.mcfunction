@@ -6,7 +6,7 @@ execute as @a if items entity @s[scores={death_handler=1..}] container.* iron_ax
 execute as @a if items entity @s[scores={death_handler=1..}] weapon.offhand iron_axe[custom_name=[{"text":"TOPOR9000","italic":false}],lore=[[{"text":"super TOPOR from GOD","italic":false}]],item_name=[{"text":"topor","italic":false}],enchantments={efficiency:10},can_break=[{blocks:pumpkin}]] at @s run function trackbreak:gameplay/spawn_axe
 scoreboard players set @a[scores={death_handler = 1..}] death_handler 0
 
-execute at @a[tag=oct_hunter] run kill @a[tag=!oct_hunter, distance=..1.5]
+execute at @a[tag=oct_hunter] run kill @a[tag=!oct_hunter, distance=..1.5, gamemode=adventure]
 
 execute as @a[tag=oct_hunter] at @s if entity @a[tag=!oct_hunter, distance=..20, team=!specs] run effect give @s minecraft:saturation 2
 
